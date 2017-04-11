@@ -1,0 +1,5 @@
+planner_id: "RRTConnectkConfigDefault"
+planning_attempts: "5"
+planning_time: "5.0"
+tolerance_pose: "0.01"
+tolerance_angle: "0.01"

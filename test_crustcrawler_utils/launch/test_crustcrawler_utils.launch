@@ -1,0 +1,13 @@
+<launch>
+
+  <include file="$(find crustcrawler_gazebo)/launch/crustcrawler_world.launch" /> 
+
+  <node name="joint_action_server" pkg="crustcrawler_interface" type="joint_trajectory_action_server.py" output="screen" />
+
+  <include file="$(find crustcrawler_moveit_config)/launch/demo.launch" /> 
+  
+  <!--rosparam command="load" file="$(find test_crustcrawler_utils)/launch/params/global_params.yml" ns="planner_parameters"/-->
+
+  <!--node name="test_crustcrawler_utils" pkg="test_crustcrawler_utils" type="test_crustcrawler_utils" output="screen" args="joint_states:=/crustcrawler/joint_states" launch-prefix="gdb -ex run -args"/-->
+  <!--node name="test_crustcrawler_utils" pkg="test_crustcrawler_utils" type="test_crustcrawler_utils" output="screen" args="joint_states:=/crustcrawler/joint_states"/--> 
+</launch>
