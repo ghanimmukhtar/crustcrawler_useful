@@ -1,9 +1,14 @@
 #ifndef __PARAMETERS_HPP__
 #define __PARAMETERS_HPP__
 #include <ros/ros.h>
+#include <iostream>
+#include <sstream>
 #include <string>
 #include <math.h>
 #include <Eigen/Core>
+
+#include <boost/bind.hpp>
+#include <memory>
 
 #include <vector>
 
@@ -12,12 +17,18 @@
 #include <moveit/kinematic_constraints/utils.h>
 #include <moveit/robot_model_loader/robot_model_loader.h>
 #include <moveit/move_group_interface/move_group.h>
+#include <moveit/move_group/move_group_context.h>
 
 #include <moveit_msgs/GetMotionPlan.h>
+#include <moveit_msgs/PlanningScene.h>
+#include <moveit_msgs/GetPlanningScene.h>
 #include <moveit_msgs/ExecuteKnownTrajectory.h>
 #include <std_srvs/Empty.h>
 
 #include <tf/tf.h>
+#include <tf/transform_listener.h>
+#include <crustcrawler_mover_utils/move_crustcrawler_arm.h>
+#include <crustcrawler_core_msgs/EndpointState.h>
 
 struct Parameters {
     std::vector<std::string> arm_joints_names = {"joint_1", "joint_2", "joint_3", "joint_4", "joint_5", "joint_6"};
@@ -43,6 +54,12 @@ struct Parameters {
 
     std::unique_ptr<robot_model_loader::RobotModelLoader> robot_model_loader;
     robot_model::RobotModelPtr robot_model;
+
+    moveit_msgs::GetPlanningScene::Request ps_req;
+    moveit_msgs::GetPlanningScene::Response ps_res;
+    moveit_msgs::PlanningScene ps_msg;
+    bool add_octomap_to_acm = false;
+    double approach_radius = 0;
 
     double roll = 0.0, pitch = 2.1, yaw = 0.0;
     tf::Quaternion quat_angles;
@@ -128,6 +145,26 @@ public:
         return params.empty_octomap_response;
     }
 
+    moveit_msgs::GetPlanningScene::Request& get_ps_request(){
+        return params.ps_req;
+    }
+
+    moveit_msgs::GetPlanningScene::Response& get_ps_response(){
+        return params.ps_res;
+    }
+
+    moveit_msgs::PlanningScene& get_ps_msg(){
+        return params.ps_msg;
+    }
+
+    bool& get_adding_octomap_to_acm(){
+        return params.add_octomap_to_acm;
+    }
+
+    double get_approach_radius(){
+        return params.approach_radius;
+    }
+
     double get_roll(){
         return params.roll;
     }
@@ -185,6 +222,26 @@ public:
 
     void set_motion_response(moveit_msgs::GetMotionPlanResponse& motion_plan_response){
         params.final_motion_response = motion_plan_response;
+    }
+
+    void set_ps_request(moveit_msgs::GetPlanningScene::Request req){
+        params.ps_req = req;
+    }
+
+    void set_ps_response(moveit_msgs::GetPlanningScene::Response res){
+        params.ps_res = res;
+    }
+
+    void set_ps_msg(moveit_msgs::PlanningScene msg){
+        params.ps_msg = msg;
+    }
+
+    void set_adding_octomap_to_acm(bool add){
+        params.add_octomap_to_acm = add;
+    }
+
+    void set_approach_radius(double radius){
+        params.approach_radius = radius;
     }
 
     void set_roll(double roll){

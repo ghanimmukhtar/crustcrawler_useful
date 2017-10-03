@@ -1,13 +1,4 @@
-#include <ros/ros.h>
-
-#include <crustcrawler_core_msgs/EndpointState.h>
-#include <tf/transform_listener.h>
-#include <Eigen/Core>
-#include <moveit/move_group/move_group_context.h>
-#include <moveit/planning_pipeline/planning_pipeline.h>
-
 #include <crustcrawler_mover_utils/parameters.hpp>
-#include <crustcrawler_mover_utils/move_crustcrawler_arm.h>
 
 namespace crustcrawler_helpers_methods{
 /*get crustcrawler eef pose with orientation expressed as RPY

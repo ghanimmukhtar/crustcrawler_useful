@@ -1,13 +1,6 @@
 #ifndef _CRUSTCRAWLER_MOVER_HPP
 #define _CRUSTCRAWLER_MOVER_HPP
 
-#include <ros/ros.h>
-#include <ros/callback_queue.h>
-
-#include <memory>
-#include <boost/bind.hpp>
-
-#include <crustcrawler_mover_utils/parameters.hpp>
 #include <crustcrawler_mover_utils/helpers_methods.hpp>
 
 namespace crustcrawler_mover {
@@ -18,8 +11,7 @@ public:
 
     CRUSTCRAWLER_Mover(ros::NodeHandle& nh){
         //_nh.reset(new ros::NodeHandle(nh, "crustcrawler_mover"));
-        _nh.reset(new ros::NodeHandle("/"));
-        init(*_nh);
+        init(nh);
 
     }
 
@@ -37,9 +29,23 @@ public:
         global_parameters.set_joint_state(joint_state_feedback);
     }
 
-    //get the clear octomap service client
-    std::unique_ptr<ros::ServiceClient>& get_clear_octomap_service_client(){
-        return _clear_octomap;
+    void call_service_get_ps(){
+        global_parameters.get_ps_request().components.components = moveit_msgs::PlanningSceneComponents::ALLOWED_COLLISION_MATRIX;
+        _get_planning_scene->call(global_parameters.get_ps_request(), global_parameters.get_ps_response());
+        if(global_parameters.get_adding_octomap_to_acm()){
+            global_parameters.get_ps_response().scene.allowed_collision_matrix.default_entry_names.push_back("<octomap>");
+            global_parameters.get_ps_response().scene.allowed_collision_matrix.default_entry_values.push_back(true);
+        }
+        else{
+            global_parameters.get_ps_response().scene.allowed_collision_matrix.default_entry_names.clear();
+            global_parameters.get_ps_response().scene.allowed_collision_matrix.default_entry_values.clear();
+        }
+    }
+
+    void publish_psm_msg(){
+        global_parameters.get_ps_msg().is_diff = true;
+        global_parameters.get_ps_msg().allowed_collision_matrix = global_parameters.get_ps_response().scene.allowed_collision_matrix;
+        _psm_pub->publish(global_parameters.get_ps_msg());
     }
 
     Data_config global_parameters;
@@ -51,6 +57,8 @@ private:
     std::unique_ptr<ros::ServiceClient> _get_motion_plan;
     std::unique_ptr<ros::ServiceClient> _execute_motion_plan;
     std::unique_ptr<ros::ServiceClient> _clear_octomap;
+    std::unique_ptr<ros::ServiceClient> _get_planning_scene;
+    std::unique_ptr<ros::Publisher> _psm_pub;
     std::unique_ptr<ros::Subscriber> _sub_eef_msg;
     std::unique_ptr<ros::Subscriber> _sub_joint_state_msg;
 
