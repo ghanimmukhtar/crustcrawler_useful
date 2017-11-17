@@ -7,18 +7,24 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   tf
+  geometry_msgs
+  shape_msgs
 )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -fPIC")
 
+find_package(PkgConfig)
+pkg_search_module(Eigen3 REQUIRED eigen3)
+
+include_directories(${EIGEN3_INCLUDE_DIR} /usr/local/include)
+
 catkin_package(
-  INCLUDE_DIRS include
+#  INCLUDE_DIRS include
 #  LIBRARIES test_crustcrawler_utils
-  CATKIN_DEPENDS crustcrawler_mover_utils roscpp rospy std_msgs tf
+#  CATKIN_DEPENDS crustcrawler_mover_utils roscpp rospy std_msgs tf geometry_msgs shape_msgs
 #  DEPENDS system_lib
 )
 
-include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )

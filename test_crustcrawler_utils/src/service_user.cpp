@@ -1,4 +1,4 @@
-#include <crustcrawler_mover_utils/crustcrawler_mover_utils/crustcrawler_mover.hpp>
+#include <crustcrawler_mover_utils/crustcrawler_mover.hpp>
 #include <crustcrawler_mover_utils/move_crustcrawler_arm.h>
 
 using namespace crustcrawler_mover;
