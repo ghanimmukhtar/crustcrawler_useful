@@ -26,5 +26,5 @@ include_directories(
 add_executable(test_crustcrawler_utils src/test_crustcrawler_utils.cpp)
 target_link_libraries(test_crustcrawler_utils ${catkin_LIBRARIES}  )
 
-add_executable(service_user src/service_user.cpp)
-target_link_libraries(service_user ${catkin_LIBRARIES}  )
+add_executable(service_user_crustcrawler src/service_user.cpp)
+target_link_libraries(service_user_crustcrawler ${catkin_LIBRARIES}  )
