@@ -52,6 +52,32 @@ public:
         _psm_pub->publish(the_scene);
     }
 
+    void remove_world_object(std::string object_name){
+            _co.operation = moveit_msgs::CollisionObject::REMOVE;
+            _co.id = object_name;
+            _pub_co->publish(_co);
+        }
+
+    void add_world_object(std::string object_name,
+                                         geometry_msgs::PoseStamped object_pose,
+                                         std::vector<double> object_dimensions){
+            _co.header.stamp = ros::Time::now();
+            _co.header.frame_id = group->getPlanningFrame();
+
+            _co.primitives.resize(1);
+            _co.primitives[0].type = shape_msgs::SolidPrimitive::BOX;
+            _co.primitives[0].dimensions.resize(shape_tools::SolidPrimitiveDimCount<shape_msgs::SolidPrimitive::BOX>::value);
+            _co.primitive_poses.resize(1);
+
+            _co.id = object_name;
+            _co.operation = moveit_msgs::CollisionObject::ADD;
+            _co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_X] = object_dimensions[0];
+            _co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Y] = object_dimensions[1];
+            _co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Z] = object_dimensions[2];
+
+            _co.primitive_poses[0].position = object_pose.pose.position;
+            _pub_co->publish(_co);
+        }
     Data_config global_parameters;
     std::shared_ptr<moveit::planning_interface::MoveGroup> group;
 
@@ -63,13 +89,16 @@ private:
     std::unique_ptr<ros::ServiceClient> _clear_octomap;
     std::unique_ptr<ros::ServiceClient> _get_planning_scene;
     std::unique_ptr<ros::Publisher> _psm_pub;
+    std::unique_ptr<ros::Publisher> _pub_co;
     std::unique_ptr<ros::Subscriber> _sub_eef_msg;
     std::unique_ptr<ros::Subscriber> _sub_joint_state_msg;
 
+    moveit_msgs::CollisionObject _co, _collision_object;
     std::string _planner_id;
     XmlRpc::XmlRpcValue _planner_parameters;
 
     ros::NodeHandlePtr _nh;
+
 };
 
 

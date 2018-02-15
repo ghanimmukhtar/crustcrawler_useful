@@ -12,10 +12,10 @@ void CRUSTCRAWLER_Mover::init(ros::NodeHandle& nh){
     _sub_joint_state_msg.reset(new ros::Subscriber(nh.subscribe("/crustcrawler/joint_states", 10, &CRUSTCRAWLER_Mover::joint_state_Callback, this)));
     _get_planning_scene.reset(new ros::ServiceClient(nh.serviceClient<moveit_msgs::GetPlanningScene>("get_planning_scene", 1)));
     _psm_pub.reset(new ros::Publisher(nh.advertise<moveit_msgs::PlanningScene>("planning_scene", 1)));
+    _pub_co.reset(new ros::Publisher(nh.advertise<moveit_msgs::CollisionObject>("collision_object", 1)));
 
     global_parameters.set_robot_model_loader();
     global_parameters.set_robot_model();
-
 
     ROS_ERROR_STREAM("CRUSTCRAWLER MOVER :  MY NAME SPACE IS: " << nh.getNamespace() << " /////////////////////////!!!!!!!!!!!!!!");
     ROS_ERROR_STREAM("CRUSTCRAWLER MOVER : Looking for parameters: " << nh.getNamespace() + "/planner_parameters");

@@ -23,6 +23,7 @@
 #include <moveit_msgs/PlanningScene.h>
 #include <moveit_msgs/GetPlanningScene.h>
 #include <moveit_msgs/ExecuteKnownTrajectory.h>
+#include <shape_tools/solid_primitive_dims.h>
 #include <std_srvs/Empty.h>
 
 #include <tf/tf.h>
